@@ -1,6 +1,8 @@
 import time
 from Rosmaster_Lib import Rosmaster
 import threading
+import bot_vision
+
 
 bot = Rosmaster()
 mag_data = {}
@@ -78,4 +80,4 @@ class AbstractMove():
 
 
 robo = AbstractMove()
-robo.straight_and_back(10)
+robo.straight_and_back(5)
