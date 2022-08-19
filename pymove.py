@@ -10,6 +10,7 @@ current_mag = 1
 
 class BaseMove():
     def __init__(self):
+        print('init')
         self.bot = Rosmaster()
         self.bot.create_receive_threading()
         self.bot.set_auto_report_state(True, forever=False)
@@ -49,6 +50,30 @@ class BaseMove():
                 self.turn_left()
             else:
                 break
+
+    # 启用光线追踪 无终止，仅最后阶段使用！！！
+    def yel_track(self):
+        while True:
+            x, y, shape, img = bot_vision.sigDetect()
+            dire = bot_vision.direction(x, y, shape)
+            print(dire)
+
+            if dire == "right":
+                print('turn right')
+                self.turn_right()
+            elif dire == "left":
+                print('turn left')
+                self.turn_left()
+
+            elif dire == "straight":
+                print('go straight')
+                self.go_straight()
+            
+            else:
+                print('not found turning right')
+                self.turn_right()
+
+            time.sleep(0.1)
 
     def record_mag(self):
         global mag_data
