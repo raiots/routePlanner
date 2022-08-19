@@ -1,6 +1,5 @@
 import datetime
 from optparse import Values
-from turtle import color, position
 from unicodedata import name
 import npyscreen
 import os, time
