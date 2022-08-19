@@ -18,19 +18,24 @@ class BaseMove():
         thread_mag_record.start()
 
     # 直行
-    def go_straight(self, speed=-0.2, time=10):
+    def go_straight(self, speed=-0.2, proc_time=10):
         self.bot.set_car_motion(speed, 0, 0)
-        time.sleep(time)
+        time.sleep(proc_time)
     
     # 右转
-    def turn_right(self, speed=0.25, time=0.05):
+    def turn_right(self, speed=0.25, proc_time=0.05):
         self.bot.set_car_motion(0, 0, speed)
-        time.sleep(time)
+        time.sleep(proc_time)
 
     # 左转
-    def turn_left(self, speed=0.25, time=0.05):
+    def turn_left(self, speed=0.25, proc_time=0.05):
         self.bot.set_car_motion(0, 0, -speed)
-        time.sleep(time)
+        time.sleep(proc_time)
+
+    # 停止
+    def stop_move(self, proc_time=5):
+        self.bot.set_car_motion(0, 0, 0)
+        time.sleep(proc_time)
 
     # 指定角度转弯
     def turn_to(self, target_degree):
@@ -50,7 +55,7 @@ class BaseMove():
             inst_mag_data = []
             for i in range(1, 50):
                 time.sleep(0.02) # 采样速度
-                current_mag = bot.get_magnetometer_data()[1]
+                current_mag = self.bot.get_magnetometer_data()[1]
                 print("current: ", current_mag)
                 inst_mag_data.append(current_mag)
             ave_mag = sum(inst_mag_data) / len(inst_mag_data)
@@ -64,6 +69,13 @@ class AbstractMove():
     def turn_back(self):
         self.Absbot.turn_to(180)
 
+    def straight_and_back(self, distance=10):
+        self.Absbot.go_straight(proc_time=distance)
+        self.Absbot.stop_move()
+        self.turn_back()
+        self.Absbot.go_straight(proc_time=distance)
+        self.Absbot.stop_move()
+
 
 robo = AbstractMove()
-robo.turn_back()
+robo.straight_and_back(10)

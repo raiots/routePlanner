@@ -20,26 +20,26 @@ logo = """
 """
 class routePlanner(npyscreen.NPSAppManaged):
     def onStart(self):
+        thread_time = threading.Thread(target=self.update_time,args=())
+        thread_time.daemon = True
+        thread_time.start()
+
         self.main_form = MainForm()
         self.registerForm("MAIN", self.main_form)
 
-    #     thread_time = threading.Thread(target=self.update_time,args=())
-    #     thread_time.daemon = True
-    #     thread_time.start()
+    def update_time(self):
+        bot = Rosmaster()
+        # 启动接收数据，只能启动一次，所有读取数据的功能都是基于此方法
+        # Start to receive data, can only start once, all read data function is based on this method
+        bot.create_receive_threading()
+        bot.set_auto_report_state(True, forever=False)
 
-    # def update_time(self):
-    #     bot = Rosmaster()
-    #     # 启动接收数据，只能启动一次，所有读取数据的功能都是基于此方法
-    #     # Start to receive data, can only start once, all read data function is based on this method
-    #     bot.create_receive_threading()
-    #     bot.set_auto_report_state(True, forever=False)
-
-    #     while True:
-    #         current_mag = bot.get_magnetometer_data()[1]
-    #         self.main_form.mag_value.value = str(current_mag)
-    #         self.main_form.date_time.value = str(datetime.datetime.now())
-    #         self.main_form.display()
-    #         time.sleep(1)
+        while True:
+            current_mag = bot.get_magnetometer_data()[1]
+            self.main_form.mag_value.value = str(current_mag)
+            self.main_form.date_time.value = str(datetime.datetime.now())
+            self.main_form.display()
+            time.sleep(1)
 
 
 class RecordListDisplay(npyscreen.FormMutt):
