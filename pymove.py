@@ -1,3 +1,4 @@
+import json
 import time
 from Rosmaster_Lib import Rosmaster
 import threading
@@ -87,6 +88,32 @@ class BaseMove():
                 inst_mag_data.append(current_mag)
             ave_mag = sum(inst_mag_data) / len(inst_mag_data)
             mag_data[time.time()] = ave_mag
+
+    def data_record(self):
+        while True:
+            # 运行数据采集进程
+
+            # 姿态数据
+            current_mag = self.bot.get_magnetometer_data()
+            current_accelercometer = self.bot.get_accelerometer_data()
+            current_gyroscope = self.bot.get_gyroscope_data()
+
+            # 状态数据
+            current_velocity = self.bot.get_motion_data()  # 速度
+            current_encoder = self.bot.get_motor_encoder()  # 里程计
+
+            # 电池数据
+            current_battery = self.bot.get_battery_voltage()
+
+            time.sleep(0.05)  # 采样速度 20Hz
+
+            current_data = {'mag': current_mag, 'accelercometer': current_accelercometer, 'gyroscope': current_gyroscope, 'battery': current_battery, 'velocity': current_velocity, 'encoder': current_encoder}
+
+            
+            current_data_taged = {time.time(): current_data}
+            print(current_data_taged)
+            with open('data.json', 'w') as json_file:
+                json.dump(current_data_taged, json_file)
 
 
 class AbstractMove():
